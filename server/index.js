@@ -1,32 +1,58 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
-const cors = require('cors')
+const cors = require('cors');
+const express = require('express');
+const mongoose = require('mongoose');
+const UserModel = require ('./models/User');
+
 
 const app = express();
-dotenv.config();
+app.use(express.json());
+app.use(cors());
 
-// connect to db
-mongoose.connect(
-  process.env.DB_CONNECT,
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  () => console.log("...Connected to Mongo Database Successfully...")
-);
+const uri = "mongodb+srv://admin:admin@cluster0.kpg90l5.mongodb.net/assignment2?retryWrites=true&w=majority";
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log("MongoDB successfully connected"))
+  .catch(err => console.log(err));
 
-// import routes
-const authRoutes = require("./routes/auth");
-const dashboardRoutes = require("./routes/dashboard");
-const verifyToken = require("./routes/validate-token");
+app.post('/register', (req, res)=>{
+    // To post / insert data into database
 
-// middlewares
-app.use(express.json()); // for body parser
-app.use(cors()) // Use this after the variable declaration
+    const {email, password} = req.body;
+    UserModel.findOne({email: email})
+    .then(user => {
+        if(user){
+            res.json("Already registered")
+        }
+        else{
+            UserModel.create(req.body)
+            .then(log_reg_form => res.json(log_reg_form))
+            .catch(err => res.json(err))
+        }
+    })
+    
+})
 
-// route middlewares
-app.use("/api/user", authRoutes);
-app.use("/api/dashboard", verifyToken, dashboardRoutes);
+app.post('/login', (req, res)=>{
+    // To find record from the database
+    const {email, password} = req.body;
+    UserModel.findOne({email: email})
+    .then(user => {
+        if(user){
+            // If user found then these 2 cases
+            if(user.password === password) {
+                res.json("Success");
+            }
+            else{
+                res.json("Wrong password");
+            }
+        }
+        // If user not found then 
+        else{
+            res.json("No records found! ");
+        }
+    })
+})
 
-app.listen(3000, () => console.log("...Server is Running (3000)..."));
+app.listen(3001, () => {
+    console.log("Server listining on http://127.0.0.1:3001");
+
+});
