@@ -17,8 +17,8 @@ const Register = () => {
         .then(result => {
             console.log(result);
             if(result.data === "Already registered"){
-                alert("E-mail already registered! Please Login to proceed.");
-                navigate('/login');
+                alert("E-mail already registered! Use another one!");
+                navigate('/register');
             }
             else{
                 alert("Registered successfully! Please Login to proceed.")
