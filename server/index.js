@@ -1,8 +1,7 @@
 const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const UserModel = require ('./models/User');
-
+const userRoutes = require('./routes/users'); 
 
 const app = express();
 app.use(express.json());
@@ -13,46 +12,9 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
 
-app.post('/register', (req, res)=>{
-    // To post / insert data into database
-
-    const {email, password} = req.body;
-    UserModel.findOne({email: email})
-    .then(user => {
-        if(user){
-            res.json("Already registered")
-        }
-        else{
-            UserModel.create(req.body)
-            .then(log_reg_form => res.json(log_reg_form))
-            .catch(err => res.json(err))
-        }
-    })
-    
-})
-
-app.post('/login', (req, res)=>{
-    // To find record from the database
-    const {email, password} = req.body;
-    UserModel.findOne({email: email})
-    .then(user => {
-        if(user){
-            // If user found then these 2 cases
-            if(user.password === password) {
-                res.json("Success");
-            }
-            else{
-                res.json("Wrong password");
-            }
-        }
-        // If user not found then 
-        else{
-            res.json("No records found! ");
-        }
-    })
-})
+app.use('/', userRoutes);
 
 app.listen(3001, () => {
-    console.log("Server listining on http://127.0.0.1:3001");
-
+    console.log("Server listening on http://127.0.0.1:3001");
 });
+
