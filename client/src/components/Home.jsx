@@ -53,7 +53,6 @@ const Home = () => {
                             <td>{employee.lastName}</td>
                             <td>{employee.email}</td>
                             <td>
-                                <Link to={`/edit-employee/${employee.id}`} className="btn btn-sm btn-warning">Edit</Link>
                                 <button className="btn btn-sm btn-danger" onClick={() => deleteEmployee(employee._id)}>
                                     Delete
                                 </button>
