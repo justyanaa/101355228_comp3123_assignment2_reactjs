@@ -1,15 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 const Home = () => {
     const [employees, setEmployees] = useState([]);
 
     useEffect(() => {
-        
+        const token = localStorage.getItem('token');
+
+        axios.get('http://localhost:3001/employees', {
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        })
+        .then(response => {
+            setEmployees(response.data);
+        })
+        .catch(error => console.log(error));
     }, []);
 
     return (
-        <div style= {{backgroundColor : "#a0a0a0"}} className="d-flex flex-column justify-content-center align-items-center text-center vh-100">
+        <div style={{backgroundColor: "#a0a0a0"}} className="d-flex flex-column justify-content-center align-items-center text-center vh-100">
             <h1>Employee List</h1>
             <Link to='/add-employee' className="btn btn-primary my-3">Add Employee</Link>
             <table className="table">
@@ -28,7 +39,6 @@ const Home = () => {
                             <td>{employee.lastName}</td>
                             <td>{employee.email}</td>
                             <td>
-                                {}
                                 <Link to={`/edit-employee/${employee.id}`} className="btn btn-sm btn-warning">Edit</Link>
                                 <button className="btn btn-sm btn-danger">Delete</button>
                             </td>
