@@ -12,11 +12,16 @@ const AddEmployee = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:3001/employees', employee)
-            .then(() => {
-                navigate('/home');
-            })
-            .catch(err => console.log(err));
+    
+        axios.post('http://localhost:3001/employees', employee, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+        .then(() => {
+            navigate('/home');
+        })
+        .catch(err => console.log(err));
     }
 
     const handleCancel = () => {
