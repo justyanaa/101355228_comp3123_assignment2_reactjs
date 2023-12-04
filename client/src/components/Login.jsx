@@ -12,20 +12,21 @@ const Login = () => {
     const handleSubmit = (event) => {
         event.preventDefault();
         
-        axios.post( 'http://localhost:3001/login', {email, password})
+        axios.post('http://localhost:3001/login', { email, password })
         .then(result => {
             console.log(result);
-            if(result.data === "Success"){
-                console.log("Login Success");
-                alert('Login successful!')
+            if(result.data.token){ 
+                localStorage.setItem('token', result.data.token); 
                 navigate('/home');
-            }
-            else{
-                alert('Incorrect password! Please try again.');
+            } else {
+                alert('Login failed! Please try again.');
             }
         })
-        .catch(err => console.log(err));
-    }
+        .catch(err => {
+            console.log(err);
+            alert('An error occurred. Please try again.');
+        });
+    };
 
 
     return (
@@ -62,7 +63,6 @@ const Login = () => {
                         </div>
                         <button type="submit" className="btn btn-primary">Login</button>
                     </form>
-                    {/* TO add ' appostopee */}
                     <p className='container my-2'>Don&apos;t have an account?</p>
                     <Link to='/register' className="btn btn-secondary">Register</Link>
                 </div>
