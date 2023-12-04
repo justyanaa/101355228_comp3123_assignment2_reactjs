@@ -1,7 +1,8 @@
-const cors = require('cors');
 const express = require('express');
 const mongoose = require('mongoose');
-const userRoutes = require('./routes/users'); 
+const cors = require('cors');
+const userRoutes = require('./routes/users');
+const employeeRoutes = require('./routes/employees');
 
 const app = express();
 app.use(express.json());
@@ -13,6 +14,7 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
   .catch(err => console.log(err));
 
 app.use('/', userRoutes);
+app.use('/', employeeRoutes);
 
 app.listen(3001, () => {
     console.log("Server listening on http://127.0.0.1:3001");
