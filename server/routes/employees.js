@@ -21,4 +21,21 @@ router.get('/employees', authMiddleware, (req, res) => {
         .catch(err => res.status(500).json(err));
 });
 
+router.delete('/employees/:id', authMiddleware, (req, res) => {
+    
+    const userId = req.userId;
+    const employeeId = req.params.id;
+
+    EmployeeModel.findOne({ _id: employeeId, createdBy: userId })
+        .then(employee => {
+            if (employee) {
+                return employee.remove();
+            } else {
+                return res.status(404).json({ message: "Employee not found or not authorized" });
+            }
+        })
+        .then(() => res.json({ message: "Employee deleted successfully" }))
+        .catch(err => res.status(500).json(err));
+});
+
 module.exports = router;

@@ -19,6 +19,20 @@ const Home = () => {
         .catch(error => console.log(error));
     }, []);
 
+    const deleteEmployee = (employeeId) => {
+        const token = localStorage.getItem('token');
+    
+        axios.delete(`http://localhost:3001/employees/${employeeId}`, {
+            headers: {
+                'Authorization': `Bearer ${token}` 
+            }
+        })
+        .then(() => {
+            setEmployees(employees.filter(employee => employee._id !== employeeId));
+        })
+        .catch(error => console.log(error));
+    };
+
     return (
         <div style={{backgroundColor: "#a0a0a0"}} className="d-flex flex-column justify-content-center align-items-center text-center vh-100">
             <h1>Employee List</h1>
@@ -40,7 +54,9 @@ const Home = () => {
                             <td>{employee.email}</td>
                             <td>
                                 <Link to={`/edit-employee/${employee.id}`} className="btn btn-sm btn-warning">Edit</Link>
-                                <button className="btn btn-sm btn-danger">Delete</button>
+                                <button className="btn btn-sm btn-danger" onClick={() => deleteEmployee(employee._id)}>
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     ))}
